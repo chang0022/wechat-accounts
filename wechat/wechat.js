@@ -1,6 +1,5 @@
 'use strict'
 
-const sha1 = require('sha1');
 const util = require('util');
 const request = util.promisify(require('request'));
 
@@ -68,27 +67,7 @@ Wechat.prototype.updateAccessToken = function() {
             data.expires_in = expires_in;
             resolve(data);
         });
-    })
-
+    });
 }
-module.exports = opts => {
-    const wechat = new Wechat(opts);
 
-    return async ctx => {
-        const token = opts.token;
-        const signature = ctx.query.signature;
-        const nonce = ctx.query.nonce;
-        const timestamp = ctx.query.timestamp;
-        const echostr = ctx.query.echostr;
-
-        const str = [token, timestamp, nonce].sort().join('');
-
-        const sha = sha1(str);
-
-        if(sha === signature) {
-            ctx.body = echostr + '';
-        } else {
-            ctx.body = 'Wrong'
-        }
-    }
-}
+module.exports = Wechat;

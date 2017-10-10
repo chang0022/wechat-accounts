@@ -3,8 +3,8 @@
 const Koa = require('koa');
 const path = require('path');
 
-const wechat = require('./wechat/utils');
-const libs_util = require('./libs/utils');
+const wechat = require('./wechat/middleware');
+const util = require('./libs/utils');
 
 const wechat_file = path.join(__dirname, './config/wechat.txt');
 const config = {
@@ -13,11 +13,11 @@ const config = {
         appSecret: '71cd994a8e60be877bd1533d63ba9199',
         token: 'thisisneochangwechat',
         getAccessToken() {
-            return libs_util.readFileAsync(wechat_file);
+            return util.readFileAsync(wechat_file);
         },
         saveAccessToken(data) {
             data = JSON.stringify(data);
-            return libs_util.writeFileAsync(wechat_file, data);
+            return util.writeFileAsync(wechat_file, data);
         }
     }
 };
