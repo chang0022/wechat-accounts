@@ -2,6 +2,7 @@
 
 const util = require('util');
 const request = util.promisify(require('request'));
+const wechat_util = require('./wechat_util');
 
 const prefix = 'https://api.weixin.qq.com/cgi-bin/';
 const api = {
@@ -24,7 +25,7 @@ function Wechat (opts) {
             }
 
             if (self.isValidAccessToken(data)) {
-                Promise.resolve(data);
+                return Promise.resolve(data);
             } else {
                 return self.updateAccessToken();
             }
@@ -70,4 +71,14 @@ Wechat.prototype.updateAccessToken = function() {
     });
 }
 
+Wechat.prototype.reply = function(ctx) {
+    var content = ctx.body;
+    var message = ctx.weixin;
+
+    var xml = wechat_util.tpl(content, message);
+
+    ctx.status = 200;
+    ctx.type = 'application/xml';
+    ctx.body = xml;
+}
 module.exports = Wechat;

@@ -1,6 +1,7 @@
 'use strict'
 
 const xml2js = require('xml2js');
+const tpl = require('./tpl');
 
 exports.parseXMLAsync = (xml) => (
   new Promise((reslove, reject) => {
@@ -46,3 +47,23 @@ function formatMessage(result) {
 }
 
 exports.formatMessage = formatMessage;
+
+exports.tpl = (content, message) => {
+  const info = {};
+  const type = 'text';
+  const fromUserName = message.FromUserName;
+  const toUserName = message.ToUserName;
+
+  if (Array.isArray(content)) {
+    type = 'news';
+  }
+
+  type = content.type || type;
+  info.content = content;
+  info.createTime = new Data().getTime();
+  info.msgType = type;
+  info.toUserName = fromUserName;
+  info.fromUserName = toUserName;
+
+  return tpl.compiled(info);
+}
