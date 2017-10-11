@@ -50,7 +50,7 @@ exports.formatMessage = formatMessage;
 
 exports.tpl = (content, message) => {
   const info = {};
-  const type = 'text';
+  let type = 'text';
   const fromUserName = message.FromUserName;
   const toUserName = message.ToUserName;
 
@@ -60,10 +60,10 @@ exports.tpl = (content, message) => {
 
   type = content.type || type;
   info.content = content;
-  info.createTime = new Data().getTime();
+  info.createTime = new Date().getTime();
   info.msgType = type;
   info.toUserName = fromUserName;
   info.fromUserName = toUserName;
-
+  
   return tpl.compiled(info);
 }

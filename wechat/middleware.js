@@ -38,9 +38,9 @@ module.exports = (opts, handler) => {
             });
 
             const content = await wechat_util.parseXMLAsync(data);
-            console.log(ctx)
-            const message = wechat_util.formatMessage(content.xml);
 
+            const message = wechat_util.formatMessage(content.xml);
+            
             ctx.weixin = message;
 
             await handler(ctx, next);
