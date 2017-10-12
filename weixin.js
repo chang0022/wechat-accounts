@@ -107,6 +107,19 @@ exports.reply = async (ctx, next) => {
             //         mediaId: data.media_id
             //     }
             //     break;
+            case '计算':
+                const count = await wechatApi.countMaterial();
+
+                const list = await wechatApi.batchMaterial({
+                    type: 'image',
+                    offset: 0,
+                    count: 10
+                });
+
+                console.log(count);
+                console.log(list);
+                reply = '计算完毕';
+                break;
             default:
                 reply = '你的说：' + message.Content + '不明白';
         }
