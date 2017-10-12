@@ -29,6 +29,7 @@ exports.reply = async (ctx, next) => {
     } else if (message.MsgType === 'text') {
         const content = message.Content;
         let reply = null;
+        let data = null;
 
         switch (content) {
             case '1':
@@ -84,12 +85,28 @@ exports.reply = async (ctx, next) => {
                 ];
                 break;
             case '图片':
-                const data = await wechatApi.uploadMaterial('image', __dirname + '/image/avatar.jpg');
+                data = await wechatApi.uploadMaterial('image', __dirname + '/image/avatar.jpg');
                 reply = {
                     type: 'image',
                     mediaId: data.media_id
                 }
                 break;
+            case '永久':
+                data = await wechatApi.uploadMaterial('image', __dirname + '/image/permanent.jpg', { type: 'image' });
+                reply = {
+                    type: 'image',
+                    mediaId: data.media_id
+                }
+                break;
+            // case '视频':
+            //     data = await wechatApi.uploadMaterial('video', __dirname + '/video/video.mp4', { type: 'video', description: '{"title":"一个小视频", "introduction":"日常拍摄"}' });
+            //     reply = {
+            //         type: 'video',
+            //         title: '日常一角',
+            //         description: '未知视频',
+            //         mediaId: data.media_id
+            //     }
+            //     break;
             default:
                 reply = '你的说：' + message.Content + '不明白';
         }

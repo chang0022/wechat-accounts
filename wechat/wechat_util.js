@@ -5,8 +5,8 @@ const tpl = require('./tpl');
 
 exports.parseXMLAsync = (xml) => (
   new Promise((reslove, reject) => {
-    xml2js.parseString(xml, {trim: true}, (err, content) => {
-      if(err) reject(err)
+    xml2js.parseString(xml, { trim: true }, (err, content) => {
+      if (err) reject(err)
       else reslove(content)
     })
   })
@@ -14,21 +14,21 @@ exports.parseXMLAsync = (xml) => (
 
 function formatMessage(result) {
   const message = {};
-  if(typeof result === 'object') {
+  if (typeof result === 'object') {
     const keys = Object.keys(result);
 
     for (let i = 0; i < keys.length; i++) {
       const item = result[keys[i]];
       const key = keys[i];
 
-      if(!(item instanceof Array) || item.length === 0) {
+      if (!(item instanceof Array) || item.length === 0) {
         continue;
       }
 
-      if(item.length === 1) {
+      if (item.length === 1) {
         const val = item[0];
 
-        if(typeof val === 'object') {
+        if (typeof val === 'object') {
           message[key] = formatMessage(val);
         } else {
           message[key] = (val || '').trim();
@@ -64,6 +64,6 @@ exports.tpl = (content, message) => {
   info.msgType = type;
   info.toUserName = fromUserName;
   info.fromUserName = toUserName;
-  
+
   return tpl.compiled(info);
 }

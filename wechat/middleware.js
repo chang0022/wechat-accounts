@@ -20,13 +20,13 @@ module.exports = (opts, handler) => {
         const sha = sha1(str);
 
         if (ctx.method === 'GET') {
-            if(sha === signature) {
+            if (sha === signature) {
                 ctx.body = echostr + '';
             } else {
                 ctx.body = 'Wrong'
             }
-        } else if(ctx.method === 'POST') {
-            if(sha !== signature) {
+        } else if (ctx.method === 'POST') {
+            if (sha !== signature) {
                 ctx.body = 'Wrong'
                 return false;
             }
@@ -40,7 +40,7 @@ module.exports = (opts, handler) => {
             const content = await wechat_util.parseXMLAsync(data);
 
             const message = wechat_util.formatMessage(content.xml);
-            
+
             ctx.weixin = message;
 
             await handler(ctx, next);
