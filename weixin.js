@@ -120,8 +120,18 @@ exports.reply = async (ctx, next) => {
                 console.log(list);
                 reply = '计算完毕';
                 break;
+            case '获取':
+                const userList = await wechatApi.fetchUserList();
+                console.log(userList);
+                reply = '获取完毕';
+                break;
+            case '信息':
+                const user = await wechatApi.fetchUsers(message.FromUserName);
+                console.log(user);
+                reply = '获取个人信息';
+                break;
             default:
-                reply = '你的说：' + message.Content + '不明白';
+                reply = '你的说：' + message.Content + ' 不明白';
         }
 
         ctx.body = reply;

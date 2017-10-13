@@ -22,6 +22,12 @@ const api = {
         update: prefix + 'material/update_news?',
         count: prefix + 'material/get_materialcount?',
         batch: prefix + 'material/batchget_material?'
+    },
+    user: {
+        list: prefix + 'user/get?',
+        remark: prefix + 'user/info/updateremark?',
+        fetch: prefix + 'user/info?',
+        batchFetch: prefix + 'user/info/batchget?'
     }
 };
 
@@ -329,6 +335,104 @@ Wechat.prototype.batchMaterial = function (options) {
 
     });
 }
+
+Wechat.prototype.remarkUser = function (openId, remark) {
+    const self = this;
+    const form = {
+        openid: openId,
+        remark: remark
+    };
+    return new Promise((resolve, reject) => {
+        self
+            .fetchAccessToken()
+            .then(data => {
+                let url = api.user.remark + `access_token=${data.access_token}`;
+
+                request({ method: 'POST', url: url, body: form, json: true })
+                    .then(res => {
+                        const _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Remark user fails')
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            })
+
+    });
+}
+
+Wechat.prototype.fetchUsers = function (openIds, lang) {
+    const self = this;
+    lang = lang || 'zh_CN';
+    return new Promise((resolve, reject) => {
+        self
+            .fetchAccessToken()
+            .then(data => {
+                const options = {
+                    json: true
+                }
+                if (_.isArray(openIds)) {
+                    options.url = api.user.batchFetch + `access_token=${data.access_token}`;
+
+                    options.body = {
+                        user_list: openIds
+                    };
+                    options.method = 'POST';
+                } else {
+                    options.url = api.user.fetch + `access_token=${data.access_token}&openid=${openIds}&lang=${lang}`;
+                }
+
+                request(options)
+                    .then(res => {
+                        const _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('BatchFetch fails')
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            })
+
+    });
+}
+
+Wechat.prototype.fetchUserList = function (next_openid) {
+    const self = this;
+    return new Promise((resolve, reject) => {
+        self
+            .fetchAccessToken()
+            .then(data => {
+                let url = null;
+                if (next_openid) {
+                    url = api.user.list + `access_token=${data.access_token}&next_openid=${next_openid}`;
+                } else {
+                    url = api.user.list + `access_token=${data.access_token}`;
+                }
+
+                request({ url: url, json: true })
+                    .then(res => {
+                        const _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Fetch userList fails')
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            })
+
+    });
+}
+
 Wechat.prototype.reply = function (ctx) {
     var content = ctx.body;
     var message = ctx.weixin;
