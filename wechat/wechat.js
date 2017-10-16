@@ -28,6 +28,12 @@ const api = {
         remark: prefix + 'user/info/updateremark?',
         fetch: prefix + 'user/info?',
         batchFetch: prefix + 'user/info/batchget?'
+    },
+    menu: {
+        create: prefix + 'menu/create?',
+        get: prefix + 'menu/get?',
+        del: prefix + 'menu/delete?',
+        current: prefix + 'get_current_selfmenu_info?'
     }
 };
 
@@ -430,6 +436,102 @@ Wechat.prototype.fetchUserList = function (next_openid) {
                     });
             })
 
+    });
+}
+
+Wechat.prototype.createMenu = function (menu) {
+    const self = this;
+    return new Promise((resolve, reject) => {
+        self
+            .fetchAccessToken()
+            .then(data => {
+                const url = api.menu.create + `access_token=${data.access_token}`;
+
+                request({ method: 'POST', url: url, body: menu, json: true })
+                    .then(res => {
+                        const _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Create Menu fails')
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            })
+    });
+}
+
+Wechat.prototype.getMenu = function () {
+    const self = this;
+    return new Promise((resolve, reject) => {
+        self
+            .fetchAccessToken()
+            .then(data => {
+                const url = api.menu.get + `access_token=${data.access_token}`;
+
+                request({ url: url, json: true })
+                    .then(res => {
+                        const _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Get Menu fails')
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            })
+    });
+}
+
+Wechat.prototype.deleteMenu = function () {
+    const self = this;
+    return new Promise((resolve, reject) => {
+        self
+            .fetchAccessToken()
+            .then(data => {
+                const url = api.menu.del + `access_token=${data.access_token}`;
+
+                request({ url: url, json: true })
+                    .then(res => {
+                        const _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Delete Menu fails')
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            })
+    });
+}
+
+Wechat.prototype.getCurrentMenu = function () {
+    const self = this;
+    return new Promise((resolve, reject) => {
+        self
+            .fetchAccessToken()
+            .then(data => {
+                const url = api.menu.current + `access_token=${data.access_token}`;
+
+                request({ url: url, json: true })
+                    .then(res => {
+                        const _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Get current self menu fails')
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            })
     });
 }
 

@@ -3,7 +3,15 @@
 const config = require('./config')
 const Wechat = require('./wechat/wechat');
 const wechatApi = new Wechat(config.wechat);
+const menu = require('./wechat/menu');
 
+wechatApi.deleteMenu()
+    .then(() => {
+        wechatApi.createMenu(menu)
+    })
+    .then(msg => {
+        console.log(msg);
+    });
 exports.reply = async (ctx, next) => {
     const message = ctx.weixin;
 
@@ -92,7 +100,7 @@ exports.reply = async (ctx, next) => {
                 }
                 break;
             case '永久':
-                data = await wechatApi.uploadMaterial('image', __dirname + '/image/permanent.jpg', { type: 'image' });
+                data = await wechatApi.uploadMaterial('image', __dirname + '/image/permanent.jpg', {type: 'image'});
                 reply = {
                     type: 'image',
                     mediaId: data.media_id
@@ -138,4 +146,4 @@ exports.reply = async (ctx, next) => {
     }
 
     await next();
-}
+};
