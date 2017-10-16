@@ -1,12 +1,13 @@
-'use strict'
+'use strict';
 
-const _ = require('lodash')
+const _ = require('lodash');
 const util = require('util');
 const fs = require('fs');
 const request = util.promisify(require('request'));
 const wechat_util = require('./wechat_util');
 
 const prefix = 'https://api.weixin.qq.com/cgi-bin/';
+const mp_prefix = 'https://mp.weixin.qq.com/cgi-bin/';
 const api = {
     accessToken: prefix + 'token?grant_type=client_credential',
     temporary: {
@@ -34,6 +35,10 @@ const api = {
         get: prefix + 'menu/get?',
         del: prefix + 'menu/delete?',
         current: prefix + 'get_current_selfmenu_info?'
+    },
+    qrcode: {
+        create: prefix + 'qrcode/create?',
+        show: mp_prefix + 'showqrcode?'
     }
 };
 
@@ -77,7 +82,7 @@ Wechat.prototype.fetchAccessToken = function (data) {
 
             return Promise.resolve(data);
         })
-}
+};
 Wechat.prototype.isValidAccessToken = function (data) {
     if (!data || !data.access_token || !data.expires_in) {
         return false;
@@ -87,12 +92,8 @@ Wechat.prototype.isValidAccessToken = function (data) {
     const expires_in = data.expires_in;
     const now = new Date().getTime();
 
-    if (now < expires_in) {
-        return true;
-    } else {
-        return false;
-    }
-}
+    return (now < expires_in);
+};
 
 Wechat.prototype.updateAccessToken = function () {
     const appID = this.appID;
@@ -103,13 +104,12 @@ Wechat.prototype.updateAccessToken = function () {
         request({ url: url, json: true }).then(res => {
             const data = res.body;
             const now = new Date().getTime();
-            const expires_in = now + (data.expires_in - 20) * 1000;
 
-            data.expires_in = expires_in;
+            data.expires_in = now + (data.expires_in - 20) * 1000;;
             resolve(data);
         });
     });
-}
+};
 
 Wechat.prototype.uploadMaterial = function (type, material, permanent) {
     const self = this;
@@ -146,7 +146,7 @@ Wechat.prototype.uploadMaterial = function (type, material, permanent) {
                     method: 'POST',
                     url: url,
                     json: true
-                }
+                };
 
                 if (type === 'news') {
                     options.body = form;
@@ -168,13 +168,13 @@ Wechat.prototype.uploadMaterial = function (type, material, permanent) {
             })
 
     });
-}
+};
 
 Wechat.prototype.fetchMaterial = function (mediaId, type, permanent) {
     const self = this;
     let fetchUrl = api.temporary.fetch;
 
-    let form = {}
+    let form = {};
 
     if (permanent) {
         fetchUrl = api.permanent.fetch;
@@ -190,7 +190,7 @@ Wechat.prototype.fetchMaterial = function (mediaId, type, permanent) {
                     method: 'POST',
                     url: url,
                     json: true
-                }
+                };
                 if (permanent) {
                     form.media_id = mediaId;
                     form.access_token = data.access_token;
@@ -222,7 +222,7 @@ Wechat.prototype.fetchMaterial = function (mediaId, type, permanent) {
             })
 
     });
-}
+};
 
 Wechat.prototype.deleteMaterial = function (mediaId) {
     const self = this;
@@ -251,7 +251,7 @@ Wechat.prototype.deleteMaterial = function (mediaId) {
             })
 
     });
-}
+};
 
 Wechat.prototype.updateMaterial = function (mediaId, news) {
     const self = this;
@@ -280,7 +280,7 @@ Wechat.prototype.updateMaterial = function (mediaId, news) {
             })
 
     });
-}
+};
 
 Wechat.prototype.countMaterial = function () {
     const self = this;
@@ -306,7 +306,7 @@ Wechat.prototype.countMaterial = function () {
             })
 
     });
-}
+};
 
 Wechat.prototype.batchMaterial = function (options) {
     const self = this;
@@ -315,7 +315,7 @@ Wechat.prototype.batchMaterial = function (options) {
         type: 'image',
         offset: 0,
         count: 1
-    }
+    };
 
     _.extend(setting, options);
 
@@ -340,7 +340,7 @@ Wechat.prototype.batchMaterial = function (options) {
             })
 
     });
-}
+};
 
 Wechat.prototype.remarkUser = function (openId, remark) {
     const self = this;
@@ -369,18 +369,19 @@ Wechat.prototype.remarkUser = function (openId, remark) {
             })
 
     });
-}
+};
 
 Wechat.prototype.fetchUsers = function (openIds, lang) {
     const self = this;
     lang = lang || 'zh_CN';
+    console.log(self.fetchAccessToken());
     return new Promise((resolve, reject) => {
         self
             .fetchAccessToken()
             .then(data => {
                 const options = {
                     json: true
-                }
+                };
                 if (_.isArray(openIds)) {
                     options.url = api.user.batchFetch + `access_token=${data.access_token}`;
 
@@ -407,7 +408,7 @@ Wechat.prototype.fetchUsers = function (openIds, lang) {
             })
 
     });
-}
+};
 
 Wechat.prototype.fetchUserList = function (next_openid) {
     const self = this;
@@ -437,7 +438,7 @@ Wechat.prototype.fetchUserList = function (next_openid) {
             })
 
     });
-}
+};
 
 Wechat.prototype.createMenu = function (menu) {
     const self = this;
@@ -461,7 +462,7 @@ Wechat.prototype.createMenu = function (menu) {
                     });
             })
     });
-}
+};
 
 Wechat.prototype.getMenu = function () {
     const self = this;
@@ -485,7 +486,7 @@ Wechat.prototype.getMenu = function () {
                     });
             })
     });
-}
+};
 
 Wechat.prototype.deleteMenu = function () {
     const self = this;
@@ -509,7 +510,7 @@ Wechat.prototype.deleteMenu = function () {
                     });
             })
     });
-}
+};
 
 Wechat.prototype.getCurrentMenu = function () {
     const self = this;
@@ -533,16 +534,16 @@ Wechat.prototype.getCurrentMenu = function () {
                     });
             })
     });
-}
+};
 
 Wechat.prototype.reply = function (ctx) {
-    var content = ctx.body;
-    var message = ctx.weixin;
+    const content = ctx.body;
+    const message = ctx.weixin;
 
-    var xml = wechat_util.tpl(content, message);
+    const xml = wechat_util.tpl(content, message);
 
     ctx.status = 200;
     ctx.type = 'application/xml';
     ctx.body = xml;
-}
+};
 module.exports = Wechat;

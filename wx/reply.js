@@ -1,20 +1,21 @@
 'use strict';
 
+const path = require('path');
 const config = require('../config');
 const Wechat = require('../wechat/wechat');
 const wechatApi = new Wechat(config.wechat);
 const menu = require('./menu');
 
-wechatApi.deleteMenu()
-    .then(() => {
-        wechatApi.createMenu(menu)
-    })
-    .then(msg => {
-        console.log(msg);
-    });
+
 exports.reply = async (ctx, next) => {
     const message = ctx.weixin;
-
+    wechatApi.deleteMenu()
+        .then(() => {
+            return wechatApi.createMenu(menu);
+        })
+        .then((msg) => {
+            console.log(msg);
+        });
     if (message.MsgType === 'event') {
         if (message.Event === 'subscribe') {
             if (message.EventKey) {
@@ -32,7 +33,32 @@ exports.reply = async (ctx, next) => {
             console.log('关注后扫二维码' + message.EventKey + ' ' + message.Ticket);
             ctx.body = '看到你扫了一下哦';
         } else if (message.Event === 'VIEW') {
-            ctx.body = '你点击了菜单中的链接：' + message.EventKey;
+            ctx.body = '很好~VIEW';
+        } else if (message.Event === 'scancode_push') {
+            console.log(message.ScanCodeInfo.ScanType);
+            console.log(message.ScanResult);
+            ctx.body = '很好~scancode_push';
+        } else if (message.Event === 'scancode_waitmsg') {
+            console.log(message.ScanCodeInfo.ScanType);
+            console.log(message.ScanResult);
+            ctx.body = '很好~scancode_waitmsg';
+        }
+        else if (message.Event === 'pic_sysphoto') {
+            console.log(message.SendPicsInfo.PicList)
+            ctx.body = '很好~pic_sysphoto';
+        }
+        else if (message.Event === 'pic_photo_or_album') {
+            console.log(message.SendPicsInfo.PicList)
+            ctx.body = '很好~pic_photo_or_album';
+        } else if (message.Event === 'pic_weixin') {
+            console.log(message.SendPicsInfo.PicList)
+            ctx.body = '很好~pic_weixin';
+        } else if (message.Event === 'location_select') {
+            console.log(message.SendLocationInfo.Location_X)
+            console.log(message.SendLocationInfo.Location_Y)
+            console.log(message.SendLocationInfo.Scale)
+            console.log(message.SendLocationInfo.Label)
+            ctx.body = '很好~location_select';
         }
     } else if (message.MsgType === 'text') {
         const content = message.Content;
@@ -93,14 +119,14 @@ exports.reply = async (ctx, next) => {
                 ];
                 break;
             case '图片':
-                data = await wechatApi.uploadMaterial('image', __dirname + '/image/avatar.jpg');
+                data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../image/avatar.jpg'));
                 reply = {
                     type: 'image',
                     mediaId: data.media_id
                 };
                 break;
             case '永久':
-                data = await wechatApi.uploadMaterial('image', __dirname + '/image/permanent.jpg', {type: 'image'});
+                data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../image/permanent.jpg'), { type: 'image' });
                 reply = {
                     type: 'image',
                     mediaId: data.media_id
@@ -143,6 +169,16 @@ exports.reply = async (ctx, next) => {
         }
 
         ctx.body = reply;
+    } else if (message.MsgType === 'image') {
+        ctx.body = message.PicUrl;
+    } else if (message.MsgType === 'voice') {
+        ctx.body = message.Recognition;
+    } else if (message.MsgType === 'video') {
+        ctx.body = message.MediaId;
+    } else if (message.MsgType === 'shortvideo') {
+        ctx.body = message.MediaId;
+    } else if (message.MsgType === 'location') {
+        ctx.body = message.Label;
     }
 
     await next();

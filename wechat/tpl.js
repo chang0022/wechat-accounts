@@ -1,9 +1,9 @@
-'use strict'
+'use strict';
 
 const ejs = require('ejs');
 const heredoc = require('heredoc');
 
-var tpl = heredoc(() => {/*
+const tpl = heredoc(() => {/*
         <xml>
         <ToUserName><![CDATA[<%= toUserName %>]]></ToUserName>
         <FromUserName><![CDATA[<%= fromUserName %>]]></FromUserName>
@@ -47,10 +47,10 @@ var tpl = heredoc(() => {/*
             </Articles>
         <% } %>
         </xml>
-*/})
+*/});
 
 const compiled = ejs.compile(tpl);
 
 exports = module.exports = {
     compiled
-}
+};

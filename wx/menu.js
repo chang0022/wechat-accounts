@@ -43,12 +43,12 @@ module.exports = {
                 {
                     "type": "pic_weixin",
                     "name": "微信相册发图",
-                    "key": "pic_weixin"
+                    "key": "rselfmenu_1_2"
                 },
                 {
                     "name": "发送位置",
                     "type": "location_select",
-                    "key": "location_select"
+                    "key": "rselfmenu_2_0"
                 }
             ]
         }

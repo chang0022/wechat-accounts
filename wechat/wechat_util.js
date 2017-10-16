@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const xml2js = require('xml2js');
 const tpl = require('./tpl');
@@ -6,11 +6,11 @@ const tpl = require('./tpl');
 exports.parseXMLAsync = (xml) => (
   new Promise((reslove, reject) => {
     xml2js.parseString(xml, { trim: true }, (err, content) => {
-      if (err) reject(err)
+      if (err) reject(err);
       else reslove(content)
     })
   })
-)
+);
 
 function formatMessage(result) {
   const message = {};
@@ -66,4 +66,4 @@ exports.tpl = (content, message) => {
   info.fromUserName = toUserName;
 
   return tpl.compiled(info);
-}
+};
