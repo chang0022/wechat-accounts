@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const sha1 = require('sha1');
 const getRawBody = require('raw-body');
@@ -39,9 +39,7 @@ module.exports = (opts, handler) => {
 
             const content = await wechat_util.parseXMLAsync(data);
 
-            const message = wechat_util.formatMessage(content.xml);
-
-            ctx.weixin = message;
+            ctx.weixin = wechat_util.formatMessage(content.xml);
 
             await handler(ctx, next);
 
@@ -49,4 +47,4 @@ module.exports = (opts, handler) => {
         }
 
     }
-}
+};

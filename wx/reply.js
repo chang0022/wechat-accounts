@@ -1,9 +1,9 @@
-'use strict'
+'use strict';
 
-const config = require('./config')
-const Wechat = require('./wechat/wechat');
+const config = require('../config');
+const Wechat = require('../wechat/wechat');
 const wechatApi = new Wechat(config.wechat);
-const menu = require('./wechat/menu');
+const menu = require('./menu');
 
 wechatApi.deleteMenu()
     .then(() => {
@@ -97,14 +97,14 @@ exports.reply = async (ctx, next) => {
                 reply = {
                     type: 'image',
                     mediaId: data.media_id
-                }
+                };
                 break;
             case '永久':
                 data = await wechatApi.uploadMaterial('image', __dirname + '/image/permanent.jpg', {type: 'image'});
                 reply = {
                     type: 'image',
                     mediaId: data.media_id
-                }
+                };
                 break;
             // case '视频':
             //     data = await wechatApi.uploadMaterial('video', __dirname + '/video/video.mp4', { type: 'video', description: '{"title":"一个小视频", "introduction":"日常拍摄"}' });

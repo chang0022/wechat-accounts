@@ -1,4 +1,4 @@
-'use strice';
+'use strict';
 
 module.exports = {
     'button': [
@@ -53,7 +53,7 @@ module.exports = {
             ]
         }
     ]
-}
+};
 
 // {
 //     "type": "media_id",

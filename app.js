@@ -6,7 +6,7 @@ const wechat = require('./wechat/middleware');
 const path = require('path');
 const util = require('./libs/utils');
 const config = require('./config')
-const weixin = require('./weixin');
+const weixin = require('./wx/reply');
 
 const app = new Koa();
 
