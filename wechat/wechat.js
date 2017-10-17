@@ -38,8 +38,10 @@ const api = {
     },
     qrcode: {
         create: prefix + 'qrcode/create?',
-        show: mp_prefix + 'showqrcode?'
-    }
+        show: mp_prefix + 'showqrcode?',
+        shorturl: prefix + 'shorturl?'
+    },
+    semantic: 'https://api.weixin.qq.com/semantic/semproxy/search?'
 };
 
 function Wechat(opts) {
@@ -527,6 +529,89 @@ Wechat.prototype.getCurrentMenu = function () {
                             resolve(_data);
                         } else {
                             throw new Error('Get current self menu fails')
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            })
+    });
+};
+
+Wechat.prototype.createQrcode = function (qr) {
+    const self = this;
+    return new Promise((resolve, reject) => {
+        self
+            .fetchAccessToken()
+            .then(data => {
+                const url = api.qrcode.create + `access_token=${data.access_token}`;
+
+                request({ method: 'POST', url: url, body: qr, json: true })
+                    .then(res => {
+                        const _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Create Qrcode fails')
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            })
+    });
+};
+
+Wechat.prototype.showQrcode = function (ticket) {
+    return api.qrcode.show + `ticket=${encodeURI(ticket)}`;
+};
+
+Wechat.prototype.createShorturl = function (action, url) {
+    const self = this;
+
+    action = action || 'long2short';
+
+    return new Promise((resolve, reject) => {
+        self
+            .fetchAccessToken()
+            .then(data => {
+                const url = api.qrcode.shorturl + `access_token=${data.access_token}`;
+                const form = {
+                    action: action,
+                    long_url: url
+                }
+                request({ method: 'POST', url: url, body: form, json: true })
+                    .then(res => {
+                        const _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Create Shorturl fails')
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            })
+    });
+};
+
+Wechat.prototype.semantic = function (semanticData) {
+    const self = this;
+
+    return new Promise((resolve, reject) => {
+        self
+            .fetchAccessToken()
+            .then(data => {
+                const url = api.semantic + `access_token=${data.access_token}`;
+                semanticData.appid = data.appID;
+                request({ method: 'POST', url: url, body: semanticData, json: true })
+                    .then(res => {
+                        const _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Search fails')
                         }
                     })
                     .catch(err => {

@@ -164,6 +164,32 @@ exports.reply = async (ctx, next) => {
                 console.log(user);
                 reply = '获取个人信息';
                 break;
+            case '二维码':
+                const qr = {
+                    "expire_seconds": 604800,
+                    "action_name": "QR_STR_SCENE",
+                    "action_info": {
+                        "scene": {
+                            "scene_str": "test"
+                        }
+                    }
+                }
+                const qr_res = await wechatApi.createQrcode(qr);
+                const ticket = qr_res.ticket;
+                const qr_url = await wechatApi.showQrcode(ticket);
+                reply = qr_url;
+                break;
+            case '查询':
+                const semanticData = {
+                    "query": "查一下明天从杭州到北京的南航机票",
+                    "city": "杭州",
+                    "category": "flight,hotel",
+                    "uid": message.FromUserName
+                }
+                const semantic_res = await wechatApi.semantic(semanticData);
+                console.log(semantic_res)
+                reply = '查询完毕';
+                break;
             default:
                 reply = '你的说：' + message.Content + ' 不明白';
         }
