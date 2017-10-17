@@ -41,7 +41,10 @@ const api = {
         show: mp_prefix + 'showqrcode?',
         shorturl: prefix + 'shorturl?'
     },
-    semantic: 'https://api.weixin.qq.com/semantic/semproxy/search?'
+    semantic: 'https://api.weixin.qq.com/semantic/semproxy/search?',
+    ticket: {
+        get: prefix + 'ticket/getticket?'
+    }
 };
 
 function Wechat(opts) {
@@ -62,12 +65,36 @@ Wechat.prototype.fetchAccessToken = function (data) {
         }
     }
 
-    this.getAccessToken()
+    return this.getAccessToken()
         .then(data => {
             try {
-                data = JSON.parse();
+                data = JSON.parse(data);
             } catch (e) {
                 return self.updateAccessToken();
+            }
+
+            if (self.isValidAccessToken(data)) {
+                return Promise.resolve(data);
+            } else {
+                return self.updateAccessToken();
+            }
+        })
+        .then(data => {
+            self.saveAccessToken(data);
+
+            return Promise.resolve(data);
+        })
+};
+
+Wechat.prototype.fetchTicket = function (access_token) {
+    const self = this;
+
+    return this.getTicket()
+        .then(data => {
+            try {
+                data = JSON.parse(data);
+            } catch (e) {
+                return self.updateTicket(access_token);
             }
 
             if (self.isValidAccessToken(data)) {
@@ -85,6 +112,7 @@ Wechat.prototype.fetchAccessToken = function (data) {
             return Promise.resolve(data);
         })
 };
+
 Wechat.prototype.isValidAccessToken = function (data) {
     if (!data || !data.access_token || !data.expires_in) {
         return false;
