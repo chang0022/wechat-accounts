@@ -1,15 +1,16 @@
 'use strict'
 
 const Koa = require('koa');
+const jsSHA = require('jssha');
+const ejs = require('ejs');
+const heredoc = require('heredoc');
 
 const wechat = require('./wechat/middleware');
 const path = require('path');
 const util = require('./libs/utils');
 const config = require('./config')
 const weixin = require('./wx/reply');
-const jsSHA = require('jssha');
-const ejs = require('ejs');
-const heredoc = require('heredoc');
+const Wechat = require('./wechat/wechat')
 
 const app = new Koa();
 
@@ -29,6 +30,21 @@ const tpl = heredoc(() => {/*
     </body>
     <script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
     <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script>
+        wx.config({
+            debug: true,
+            appId: 'wx001e2f72ebd7a312',
+            timestamp: <%= timestamp %>,
+            nonceStr: '<%= nonceStr %>',
+            signature: '<%= signature %>',
+            jsApiList: [
+                'startRecord',
+                'stopRecord',
+                'onVoiceRecordEnd',
+                'translateVoice'
+            ]
+        });
+    </script>
     </html>
 */});
 
@@ -64,14 +80,24 @@ const sign = (jsapi_ticket, url) => {
         url: url
     };
     let string = raw(ret);
-    let shaObj = new jsSHA(string, 'TEXT');
-    ret.signature = shaObj.getHash('SHA-1', 'HEX');
+    let shaObj = new jsSHA('SHA-1', 'TEXT');
+    shaObj.update(string);
+    ret.signature = shaObj.getHash('HEX');
     return ret;
 };
 
 app.use(async (ctx, next) => {
     if (ctx.url.indexOf('/movie') > -1) {
-        ctx.body = ejs.render(tpl, {});
+        const wechatApi = new Wechat(config.wechat);
+        const data = await wechatApi.fetchAccessToken();
+        const access_token = data.access_token;
+
+        const tickeData = await wechatApi.fetchTicket(access_token);
+        const ticket = tickeData.ticket;
+        const url = ctx.href;
+
+        const param = sign(ticket, url);
+        ctx.body = ejs.render(tpl, param);
         return next;
     }
     await next();
