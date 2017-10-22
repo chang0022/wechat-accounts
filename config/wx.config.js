@@ -1,11 +1,10 @@
 'use strict'
 
 const path = require('path');
+const util = require('../libs/utils');
 
-const util = require('./libs/utils');
-
-const wechat_file = path.join(__dirname, './config/wechat.txt');
-const jsapi_ticket = path.join(__dirname, './config/jsapi_ticket.txt');
+const access_token = path.join(__dirname, '../storage/access_token.json');
+const jsapi_ticket = path.join(__dirname, '../storage/jsapi_ticket.json');
 
 const config = {
     wechat: {
@@ -13,11 +12,11 @@ const config = {
         appSecret: '71cd994a8e60be877bd1533d63ba9199',
         token: 'thisisneochangwechat',
         getAccessToken() {
-            return util.readFileAsync(wechat_file);
+            return util.readFileAsync(access_token);
         },
         saveAccessToken(data) {
             data = JSON.stringify(data);
-            return util.writeFileAsync(wechat_file, data);
+            return util.writeFileAsync(access_token, data);
         },
         getTicket() {
             return util.readFileAsync(jsapi_ticket);

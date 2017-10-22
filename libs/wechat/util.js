@@ -64,6 +64,5 @@ exports.tpl = (content, message) => {
   info.msgType = type;
   info.toUserName = fromUserName;
   info.fromUserName = toUserName;
-
-  return tpl.compiled(info);
+  return tpl(info);
 };

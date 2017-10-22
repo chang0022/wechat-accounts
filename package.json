@@ -18,6 +18,8 @@
     "koa-views": "^6.1.1",
     "lodash": "^4.17.4",
     "raw-body": "^2.3.2",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5",
     "sha1": "^1.1.1",
     "xml2js": "^0.4.19"
   }

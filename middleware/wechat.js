@@ -2,8 +2,8 @@
 
 const sha1 = require('sha1');
 const getRawBody = require('raw-body');
-const Wechat = require('./wechat');
-const wechat_util = require('./wechat_util');
+const Wechat = require('../libs/wechat/index');
+const util = require('../libs/wechat/util');
 
 module.exports = (opts, handler) => {
     const wechat = new Wechat(opts);
@@ -30,19 +30,18 @@ module.exports = (opts, handler) => {
                 ctx.body = 'Wrong'
                 return false;
             }
-
             const data = await getRawBody(ctx.req, {
                 length: ctx.length,
                 limit: '1mb',
                 encoding: ctx.charset
             });
 
-            const content = await wechat_util.parseXMLAsync(data);
-            ctx.weixin = wechat_util.formatMessage(content.xml);
+            const content = await util.parseXMLAsync(data);
+            ctx.wxMsg = util.formatMessage(content.xml);
+
             await handler(ctx, next);
 
             wechat.reply(ctx);
         }
-
     }
 };

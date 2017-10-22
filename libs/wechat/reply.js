@@ -1,21 +1,21 @@
 'use strict';
 
 const path = require('path');
-const config = require('../config');
-const Wechat = require('../wechat/wechat');
+const config = require('../../config/wx.config');
+const Wechat = require('./index');
 const wechatApi = new Wechat(config.wechat);
 const menu = require('./menu');
 
 
-exports.reply = async (ctx, next) => {
-    const message = ctx.weixin;
-    wechatApi.deleteMenu()
-        .then(() => {
-            return wechatApi.createMenu(menu);
-        })
-        .then((msg) => {
-            console.log(msg);
-        });
+module.exports = async (ctx, next) => {
+    const message = ctx.wxMsg;
+    // wechatApi.deleteMenu()
+    //     .then(() => {
+    //         return wechatApi.createMenu(menu);
+    //     })
+    //     .then((msg) => {
+    //         console.log(msg);
+    //     });
     if (message.MsgType === 'event') {
         if (message.Event === 'subscribe') {
             if (message.EventKey) {
@@ -119,14 +119,14 @@ exports.reply = async (ctx, next) => {
                 ];
                 break;
             case '图片':
-                data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../image/avatar.jpg'));
+                data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../../static/image/avatar.jpg'));
                 reply = {
                     type: 'image',
                     mediaId: data.media_id
                 };
                 break;
             case '永久':
-                data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../image/permanent.jpg'), { type: 'image' });
+                data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../../static/image/permanent.jpg'), { type: 'image' });
                 reply = {
                     type: 'image',
                     mediaId: data.media_id

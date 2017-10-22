@@ -5,15 +5,11 @@ const Router = require('koa-router');
 const views = require('koa-views');
 const logger = require('koa-logger');
 
-// const path = require('path');
+const api = require('./routers/api');
 
-// const wechat = require('./middleware/wechat');
-// const util = require('./libs/utils');
-// const config = require('./config/wx.config')
-// const reply = require('./libs/wechat/reply');
-// const Wechat = require('./libs/wechat')
-
-// const sign = require('./libs/sign');
+const wechat = require('./middleware/wechat');
+const config = require('./config/wx.config');
+const reply = require('./libs/wechat/reply');
 
 const app = new Koa();
 const router = new Router();
@@ -23,7 +19,7 @@ app.use(views(__dirname + '/views', {
     map: {
         hbs: 'handlebars'
     }
-}))
+}));
 
 // app.use(async (ctx, next) => {
 //     if (ctx.url.indexOf('/movie') > -1) {
@@ -41,20 +37,14 @@ app.use(views(__dirname + '/views', {
 //     }
 //     await next();
 // })
-// app.use(wechat(config.wechat, weixin.reply));
-router.get('/movie', async (ctx, next) => {
-    await ctx.render('./index.hbs', {
-        timestamp: 1,
-        nonceStr: 'test',
-        signature: 'test'
-    });
-});
+// 
+// router.use('/', api.routes());
 
-app.use(router.routes());
-// app.use(async (ctx, next) => {
-    
-// })
+// app.use(router.routes());
+
+app.use(wechat(config.wechat, reply));
+
 app.on('error', (err, ctx) => {
     logger('server error', err, ctx);
-})
+});
 app.listen(1314);
