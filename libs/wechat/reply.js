@@ -3,7 +3,9 @@
 const path = require('path');
 const config = require('../../config/wx.config');
 const Wechat = require('./index');
+const Material = require('./material');
 const wechatApi = new Wechat(config.wechat);
+const materialApi = new Material(config.wechat);
 const menu = require('./menu');
 
 
@@ -119,7 +121,7 @@ module.exports = async (ctx, next) => {
                 ];
                 break;
             case '图片':
-                data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../../static/image/avatar.jpg'));
+                data = await materialApi.uploadMaterial('image', path.join(__dirname, '../../static/image/avatar.jpg'));
                 reply = {
                     type: 'image',
                     mediaId: data.media_id
