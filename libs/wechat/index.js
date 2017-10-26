@@ -59,10 +59,10 @@ class Wechat {
     updateAccessToken() {
         const appID = this.appID;
         const appSecret = this.appSecret;
-        const url = api.accessToken + `&appid=${appID}&secret=${appSecret}`;
+        const uri = api.accessToken + `&appid=${appID}&secret=${appSecret}`;
 
         return new Promise((resolve, reject) => {
-            rp({ uri: url, json: true })
+            rp({ uri: uri, json: true })
                 .then(res => {
                     const data = res;
                     const now = new Date().getTime();
@@ -72,6 +72,7 @@ class Wechat {
         });
     }
 
+    //上传素材：必须通过微信认证
     uploadMaterial(type, material, permanent) {
         let form = {};
         let uploadUrl = api.temporary.upload;
@@ -94,17 +95,17 @@ class Wechat {
             this
                 .fetchAccessToken()
                 .then(data => {
-                    let url = uploadUrl + `access_token=${data.access_token}`;
+                    let uri = uploadUrl + `access_token=${data.access_token}`;
 
                     if (!permanent) {
-                        url += `&type=${type}`;
+                        uri += `&type=${type}`;
                     } else {
                         form.access_token = data.access_token;
                     }
 
                     const options = {
                         method: 'POST',
-                        uri: url,
+                        uri: uri,
                         json: true
                     };
 
@@ -127,6 +128,75 @@ class Wechat {
                         });
                 })
 
+        });
+    }
+    // 创建菜单
+    createMenu(menu) {
+        return new Promise((resolve, reject) => {
+            this
+                .fetchAccessToken()
+                .then(data => {
+                    const uri = api.menu.create + `access_token=${data.access_token}`;
+
+                    rp({ method: 'POST', uri: uri, body: menu, json: true })
+                        .then(res => {
+                            const _data = res;
+                            if (_data) {
+                                resolve(_data);
+                            } else {
+                                throw new Error('Create Menu fails')
+                            }
+                        })
+                        .catch(err => {
+                            reject(err);
+                        });
+                })
+        });
+    }
+    //获取菜单
+    getMenu() {
+        return new Promise((resolve, reject) => {
+            this
+                .fetchAccessToken()
+                .then(data => {
+                    const uri = api.menu.get + `access_token=${data.access_token}`;
+
+                    rp({ uri: uri, json: true })
+                        .then(res => {
+                            const _data = res;
+                            if (_data) {
+                                resolve(_data);
+                            } else {
+                                throw new Error('Get Menu fails')
+                            }
+                        })
+                        .catch(err => {
+                            reject(err);
+                        });
+                })
+        });
+    }
+
+    deleteMenu() {
+        return new Promise((resolve, reject) => {
+            this
+                .fetchAccessToken()
+                .then(data => {
+                    const uri = api.menu.del + `access_token=${data.access_token}`;
+
+                    rp({ uri: uri, json: true })
+                        .then(res => {
+                            const _data = res;
+                            if (_data) {
+                                resolve(_data);
+                            } else {
+                                throw new Error('Delete Menu fails')
+                            }
+                        })
+                        .catch(err => {
+                            reject(err);
+                        });
+                })
         });
     }
 

@@ -18,7 +18,7 @@ function Wechat(opts) {
 
     this.fetchAccessToken();
 }
-
+// 获取访问令牌
 Wechat.prototype.fetchAccessToken = function (data) {
     const self = this;
 
@@ -48,7 +48,7 @@ Wechat.prototype.fetchAccessToken = function (data) {
             return Promise.resolve(data);
         })
 };
-
+// 验证访问令牌
 Wechat.prototype.isValidAccessToken = function (data) {
     if (!data || !data.access_token || !data.expires_in) {
         return false;
@@ -60,7 +60,7 @@ Wechat.prototype.isValidAccessToken = function (data) {
 
     return (now < expires_in);
 };
-
+// 更新访问令牌
 Wechat.prototype.updateAccessToken = function () {
     const appID = this.appID;
     const appSecret = this.appSecret;
@@ -76,7 +76,7 @@ Wechat.prototype.updateAccessToken = function () {
         });
     });
 };
-
+// 获取票据
 Wechat.prototype.fetchTicket = function (access_token) {
     const self = this;
 
@@ -100,7 +100,7 @@ Wechat.prototype.fetchTicket = function (access_token) {
             return Promise.resolve(data);
         })
 };
-
+// 验证票据
 Wechat.prototype.isValidTicket = function (data) {
     if (!data || !data.ticket || !data.expires_in) {
         return false;
@@ -112,7 +112,7 @@ Wechat.prototype.isValidTicket = function (data) {
 
     return (ticket && now < expires_in);
 };
-
+// 更新票据
 Wechat.prototype.updateTicket = function (access_token) {
     const url = api.ticket.get + `&access_token=${access_token}&type=jsapi`;
 
@@ -126,7 +126,7 @@ Wechat.prototype.updateTicket = function (access_token) {
         });
     });
 };
-
+// 上传素材
 Wechat.prototype.uploadMaterial = function (type, material, permanent) {
     const self = this;
     let form = {};
@@ -185,7 +185,7 @@ Wechat.prototype.uploadMaterial = function (type, material, permanent) {
 
     });
 };
-
+// 获取素材
 Wechat.prototype.fetchMaterial = function (mediaId, type, permanent) {
     const self = this;
     let fetchUrl = api.temporary.fetch;
@@ -239,7 +239,7 @@ Wechat.prototype.fetchMaterial = function (mediaId, type, permanent) {
 
     });
 };
-
+//删除素材
 Wechat.prototype.deleteMaterial = function (mediaId) {
     const self = this;
     const form = {
@@ -268,7 +268,7 @@ Wechat.prototype.deleteMaterial = function (mediaId) {
 
     });
 };
-
+// 更新素材
 Wechat.prototype.updateMaterial = function (mediaId, news) {
     const self = this;
     const form = {
@@ -297,7 +297,7 @@ Wechat.prototype.updateMaterial = function (mediaId, news) {
 
     });
 };
-
+// 获取素材总量
 Wechat.prototype.countMaterial = function () {
     const self = this;
 
@@ -323,7 +323,7 @@ Wechat.prototype.countMaterial = function () {
 
     });
 };
-
+// 获取素材列表
 Wechat.prototype.batchMaterial = function (options) {
     const self = this;
 
@@ -357,7 +357,7 @@ Wechat.prototype.batchMaterial = function (options) {
 
     });
 };
-
+// 备注用户
 Wechat.prototype.remarkUser = function (openId, remark) {
     const self = this;
     const form = {
@@ -386,7 +386,7 @@ Wechat.prototype.remarkUser = function (openId, remark) {
 
     });
 };
-
+// 获取用户信息
 Wechat.prototype.fetchUsers = function (openIds, lang) {
     const self = this;
     lang = lang || 'zh_CN';
@@ -425,7 +425,7 @@ Wechat.prototype.fetchUsers = function (openIds, lang) {
 
     });
 };
-
+// 获取用户列表
 Wechat.prototype.fetchUserList = function (next_openid) {
     const self = this;
     return new Promise((resolve, reject) => {
@@ -455,7 +455,7 @@ Wechat.prototype.fetchUserList = function (next_openid) {
 
     });
 };
-
+// 创建菜单
 Wechat.prototype.createMenu = function (menu) {
     const self = this;
     return new Promise((resolve, reject) => {
@@ -479,7 +479,7 @@ Wechat.prototype.createMenu = function (menu) {
             })
     });
 };
-
+// 获取菜单
 Wechat.prototype.getMenu = function () {
     const self = this;
     return new Promise((resolve, reject) => {
@@ -503,7 +503,7 @@ Wechat.prototype.getMenu = function () {
             })
     });
 };
-
+//删除菜单
 Wechat.prototype.deleteMenu = function () {
     const self = this;
     return new Promise((resolve, reject) => {
@@ -527,7 +527,7 @@ Wechat.prototype.deleteMenu = function () {
             })
     });
 };
-
+// 获取自定义菜单配置接口
 Wechat.prototype.getCurrentMenu = function () {
     const self = this;
     return new Promise((resolve, reject) => {
@@ -551,7 +551,7 @@ Wechat.prototype.getCurrentMenu = function () {
             })
     });
 };
-
+// 创建二维码
 Wechat.prototype.createQrcode = function (qr) {
     const self = this;
     return new Promise((resolve, reject) => {
@@ -575,11 +575,11 @@ Wechat.prototype.createQrcode = function (qr) {
             })
     });
 };
-
+// 展示二维码
 Wechat.prototype.showQrcode = function (ticket) {
     return api.qrcode.show + `ticket=${encodeURI(ticket)}`;
 };
-
+//创建短链接
 Wechat.prototype.createShorturl = function (action, url) {
     const self = this;
 
@@ -609,7 +609,7 @@ Wechat.prototype.createShorturl = function (action, url) {
             })
     });
 };
-
+//语义理解
 Wechat.prototype.semantic = function (semanticData) {
     const self = this;
 

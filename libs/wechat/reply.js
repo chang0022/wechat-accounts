@@ -9,13 +9,13 @@ const menu = require('./menu');
 
 module.exports = async (ctx, next) => {
     const message = ctx.wxMsg;
-    // wechatApi.deleteMenu()
-    //     .then(() => {
-    //         return wechatApi.createMenu(menu);
-    //     })
-    //     .then((msg) => {
-    //         console.log(msg);
-    //     });
+    wechatApi.deleteMenu()
+        .then(() => {
+            return wechatApi.createMenu(menu);
+        })
+        .then((msg) => {
+            console.log(msg);
+        });
     if (message.MsgType === 'event') {
         if (message.Event === 'subscribe') {
             if (message.EventKey) {

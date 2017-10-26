@@ -3,16 +3,16 @@
 module.exports = {
     'button': [
         {
-            'name': '点击菜单',
+            'name': '测试案例',
             'type': 'click',
             'key': 'menu_click'
         },
         {
-            'name': '点出菜单',
+            'name': '新建菜单',
             "sub_button": [
                 {
                     "type": "view",
-                    "name": "跳转URL",
+                    "name": "百度",
                     "url": "https://baidu.com"
                 },
                 {
@@ -38,7 +38,7 @@ module.exports = {
             ]
         },
         {
-            'name': '点击菜单3',
+            'name': '发送',
             'sub_button': [
                 {
                     "type": "pic_weixin",
