@@ -24,18 +24,18 @@
         </form>
         <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
     </div>
-    <h1 id="h1">点击标题，开始录音翻译</h1>
-    <p id="title"></p>
+    <button class="weui-btn weui-btn_primary" id="J_recordBtn">点击，开始录音翻译</button>
+    {{!-- <p id="title"></p>
     <div id="directors"></div>
     <div id="year"></div>
-    <div id="poster"></div>
+    <div id="poster"></div> --}}
 </body>
-<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script> {{!--
-<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script> --}}
+<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.1.2/weui.min.js"></script>
 <script>
     weui.searchBar('#searchBar');
-</script> {{!--
+</script>
 <script>
     wx.config({
         debug: false,
@@ -52,18 +52,19 @@
     });
     wx.ready(function () {
         var isRecording = false;
-        $('#h1').click(function () {
+        $('#J_recordBtn').click(function () {
             if (!isRecording) {
+                $(this).addClass('weui-btn_loading').html('<i class="weui-loading"></i> 录音中，点击停止')
                 isRecording = true;
                 wx.startRecord({
                     cancel: function () {
                         console.log('请开启麦克风');
                     }
                 });
-
                 return '';
             }
             isRecording = false;
+            $(this).removeClass('weui-btn_loading').html('点击，开始录音翻译')
             wx.stopRecord({
                 success: function (res) {
                     var localId = res.localId;
@@ -80,6 +81,6 @@
             });
         });
     });
-</script> --}}
+</script>
 
 </html>

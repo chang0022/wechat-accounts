@@ -40,4 +40,4 @@ const sign = (jsapi_ticket, url) => {
     return ret;
 };
 
-exports.sing = sign;
+module.exports = sign;

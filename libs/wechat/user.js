@@ -1,28 +1,69 @@
 'use strict';
 /**
- * 菜单接口，必须通过微信认证
+ * 用户管理接口，必须通过微信认证
  */
 const request = require('request');
 const rp = require('request-promise-native');
 const Wechat = require('./index');
 const api = require('../../config/wx.api');
 
-class Menu extends Wechat {
-    // 创建菜单
-    createMenu(menu) {
+class User extends Wechat {
+    // 备注用户
+    remarkUser(openId, remark) {
+        const form = {
+            openid: openId,
+            remark: remark
+        };
         return new Promise((resolve, reject) => {
             this
                 .fetchAccessToken()
                 .then(data => {
-                    const uri = api.menu.create + `access_token=${data.access_token}`;
+                    let uri = api.user.remark + `access_token=${data.access_token}`;
 
-                    rp({ method: 'POST', uri: uri, body: menu, json: true })
+                    rp({ method: 'POST', uri: uri, body: form, json: true })
                         .then(res => {
                             const _data = res;
                             if (_data) {
                                 resolve(_data);
                             } else {
-                                throw new Error('Create Menu fails')
+                                throw new Error('Remark user fails')
+                            }
+                        })
+                        .catch(err => {
+                            reject(err);
+                        });
+                })
+
+        });
+    }
+    // 获取用户信息
+    fetchUsers(openIds, lang) {
+        lang = lang || 'zh_CN';
+        return new Promise((resolve, reject) => {
+            this
+                .fetchAccessToken()
+                .then(data => {
+                    const options = {
+                        json: true
+                    };
+                    if (Array.isArray(openIds)) {
+                        options.uri = api.user.batchFetch + `access_token=${data.access_token}`;
+
+                        options.body = {
+                            user_list: openIds
+                        };
+                        options.method = 'POST';
+                    } else {
+                        options.uri = api.user.fetch + `access_token=${data.access_token}&openid=${openIds}&lang=${lang}`;
+                    }
+
+                    rp(options)
+                        .then(res => {
+                            const _data = res;
+                            if (_data) {
+                                resolve(_data);
+                            } else {
+                                throw new Error('BatchFetch fails')
                             }
                         })
                         .catch(err => {
@@ -31,13 +72,18 @@ class Menu extends Wechat {
                 })
         });
     }
-    //获取菜单
-    getMenu() {
+    // 获取用户列表
+    fetchUserList(next_openid) {
         return new Promise((resolve, reject) => {
             this
                 .fetchAccessToken()
                 .then(data => {
-                    const uri = api.menu.get + `access_token=${data.access_token}`;
+                    let uri = null;
+                    if (next_openid) {
+                        uri = api.user.list + `access_token=${data.access_token}&next_openid=${next_openid}`;
+                    } else {
+                        uri = api.user.list + `access_token=${data.access_token}`;
+                    }
 
                     rp({ uri: uri, json: true })
                         .then(res => {
@@ -45,61 +91,16 @@ class Menu extends Wechat {
                             if (_data) {
                                 resolve(_data);
                             } else {
-                                throw new Error('Get Menu fails')
+                                throw new Error('Fetch userList fails')
                             }
                         })
                         .catch(err => {
                             reject(err);
                         });
                 })
-        });
-    }
-    // 删除菜单
-    deleteMenu() {
-        return new Promise((resolve, reject) => {
-            this
-                .fetchAccessToken()
-                .then(data => {
-                    const uri = api.menu.del + `access_token=${data.access_token}`;
 
-                    rp({ uri: uri, json: true })
-                        .then(res => {
-                            const _data = res;
-                            if (_data) {
-                                resolve(_data);
-                            } else {
-                                throw new Error('Delete Menu fails')
-                            }
-                        })
-                        .catch(err => {
-                            reject(err);
-                        });
-                })
-        });
-    }
-    // 获取自定义菜单配置接口
-    getCurrentMenu() {
-        return new Promise((resolve, reject) => {
-            this
-                .fetchAccessToken()
-                .then(data => {
-                    const uri = api.menu.current + `access_token=${data.access_token}`;
-
-                    rp({ uri: uri, json: true })
-                        .then(res => {
-                            const _data = res;
-                            if (_data) {
-                                resolve(_data);
-                            } else {
-                                throw new Error('Get current self menu fails')
-                            }
-                        })
-                        .catch(err => {
-                            reject(err);
-                        });
-                })
         });
     }
 }
 
-module.exports = Menu;
+module.exports = User;

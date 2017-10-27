@@ -2,21 +2,24 @@
 
 const path = require('path');
 const config = require('../../config/wx.config');
-const Wechat = require('./index');
 const Material = require('./material');
-const wechatApi = new Wechat(config.wechat);
+const User = require('./user');
+const Menu = require('./menu');
 const materialApi = new Material(config.wechat);
-const menu = require('./menu');
+const userApi = new User(config.wechat);
+const menuApi = new Menu(config.wechat);
+const menuConf = require('./menuConf');
+const robot = require('./robot');
 
 
 module.exports = async (ctx, next) => {
     const message = ctx.wxMsg;
-    wechatApi.deleteMenu()
+    menuApi.deleteMenu()
         .then(() => {
-            return wechatApi.createMenu(menu);
+            return menuApi.createMenu(menuConf);
         })
-        .then((msg) => {
-            console.log(msg);
+        .then(msg => {
+            console.log(msg)
         });
     if (message.MsgType === 'event') {
         if (message.Event === 'subscribe') {
@@ -68,36 +71,6 @@ module.exports = async (ctx, next) => {
         let data = null;
 
         switch (content) {
-            case '1':
-                reply = '一心敬';
-                break;
-            case '2':
-                reply = '哥俩好';
-                break;
-            case '3':
-                reply = '三桃园';
-                break;
-            case '4':
-                reply = '四季财';
-                break;
-            case '5':
-                reply = '五魁首';
-                break;
-            case '6':
-                reply = '六六顺';
-                break;
-            case '7':
-                reply = '七仙女';
-                break;
-            case '8':
-                reply = '八匹马';
-                break;
-            case '9':
-                reply = '九盅酒';
-                break;
-            case '10':
-                reply = '十全美';
-                break;
             case '慕课':
                 reply = [
                     {
@@ -128,25 +101,16 @@ module.exports = async (ctx, next) => {
                 };
                 break;
             case '永久':
-                data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../../static/image/permanent.jpg'), { type: 'image' });
+                data = await materialApi.uploadMaterial('image', path.join(__dirname, '../../static/image/permanent.jpg'), { type: 'image' });
                 reply = {
                     type: 'image',
                     mediaId: data.media_id
                 };
                 break;
-            // case '视频':
-            //     data = await wechatApi.uploadMaterial('video', __dirname + '/video/video.mp4', { type: 'video', description: '{"title":"一个小视频", "introduction":"日常拍摄"}' });
-            //     reply = {
-            //         type: 'video',
-            //         title: '日常一角',
-            //         description: '未知视频',
-            //         mediaId: data.media_id
-            //     }
-            //     break;
             case '计算':
-                const count = await wechatApi.countMaterial();
+                const count = await materialApi.countMaterial();
 
-                const list = await wechatApi.batchMaterial({
+                const list = await materialApi.batchMaterial({
                     type: 'image',
                     offset: 0,
                     count: 10
@@ -157,43 +121,17 @@ module.exports = async (ctx, next) => {
                 reply = '计算完毕';
                 break;
             case '获取':
-                const userList = await wechatApi.fetchUserList();
+                const userList = await userApi.fetchUserList();
                 console.log(userList);
                 reply = '获取完毕';
                 break;
             case '信息':
-                const user = await wechatApi.fetchUsers(message.FromUserName);
+                const user = await userApi.fetchUsers(message.FromUserName);
                 console.log(user);
                 reply = '获取个人信息';
                 break;
-            case '二维码':
-                const qr = {
-                    "expire_seconds": 604800,
-                    "action_name": "QR_STR_SCENE",
-                    "action_info": {
-                        "scene": {
-                            "scene_str": "test"
-                        }
-                    }
-                }
-                const qr_res = await wechatApi.createQrcode(qr);
-                const ticket = qr_res.ticket;
-                const qr_url = await wechatApi.showQrcode(ticket);
-                reply = qr_url;
-                break;
-            case '查询':
-                const semanticData = {
-                    "query": "查一下明天从杭州到北京的南航机票",
-                    "city": "杭州",
-                    "category": "flight,hotel",
-                    "uid": message.FromUserName
-                }
-                const semantic_res = await wechatApi.semantic(semanticData);
-                console.log(semantic_res)
-                reply = '查询完毕';
-                break;
             default:
-                reply = '你的说：' + message.Content + ' 不明白';
+                reply = await robot(message.Content);
         }
 
         ctx.body = reply;

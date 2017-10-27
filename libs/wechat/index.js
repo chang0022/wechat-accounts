@@ -17,7 +17,7 @@ class Wechat {
         this.fetchAccessToken();
     }
 
-    fetchAccessToken(data) {
+    fetchAccessToken() {
         if (this.access_token && this.expires_in) {
             if (this.isValidAccessToken(this)) {
                 return Promise.resolve(this);
@@ -71,73 +71,52 @@ class Wechat {
         });
     }
 
-    // 创建菜单
-    createMenu(menu) {
-        return new Promise((resolve, reject) => {
-            this
-                .fetchAccessToken()
-                .then(data => {
-                    const uri = api.menu.create + `access_token=${data.access_token}`;
+    // 获取票据
+    fetchTicket(access_token) {
+        return this.getTicket()
+            .then(data => {
+                try {
+                    data = JSON.parse(data);
+                } catch (e) {
+                    return this.updateTicket(access_token);
+                }
 
-                    rp({ method: 'POST', uri: uri, body: menu, json: true })
-                        .then(res => {
-                            const _data = res;
-                            if (_data) {
-                                resolve(_data);
-                            } else {
-                                throw new Error('Create Menu fails')
-                            }
-                        })
-                        .catch(err => {
-                            reject(err);
-                        });
-                })
-        });
-    }
-    //获取菜单
-    getMenu() {
-        return new Promise((resolve, reject) => {
-            this
-                .fetchAccessToken()
-                .then(data => {
-                    const uri = api.menu.get + `access_token=${data.access_token}`;
-
-                    rp({ uri: uri, json: true })
-                        .then(res => {
-                            const _data = res;
-                            if (_data) {
-                                resolve(_data);
-                            } else {
-                                throw new Error('Get Menu fails')
-                            }
-                        })
-                        .catch(err => {
-                            reject(err);
-                        });
-                })
-        });
+                if (this.isValidTicket(data)) {
+                    return Promise.resolve(data);
+                } else {
+                    return this.updateTicket(access_token);
+                }
+            })
+            .then(data => {
+                this.saveTicket(data);
+                return Promise.resolve(data);
+            })
     }
 
-    deleteMenu() {
-        return new Promise((resolve, reject) => {
-            this
-                .fetchAccessToken()
-                .then(data => {
-                    const uri = api.menu.del + `access_token=${data.access_token}`;
+    // 验证票据
+    isValidTicket(data) {
+        if (!data || !data.ticket || !data.expires_in) {
+            return false;
+        }
 
-                    rp({ uri: uri, json: true })
-                        .then(res => {
-                            const _data = res;
-                            if (_data) {
-                                resolve(_data);
-                            } else {
-                                throw new Error('Delete Menu fails')
-                            }
-                        })
-                        .catch(err => {
-                            reject(err);
-                        });
-                })
+        const ticket = data.ticket;
+        const expires_in = data.expires_in;
+        const now = new Date().getTime();
+
+        return (ticket && now < expires_in);
+    }
+    // 更新票据
+    updateTicket(access_token) {
+        const uri = api.ticket.get + `&access_token=${access_token}&type=jsapi`;
+
+        return new Promise((resolve, reject) => {
+            rp({ uri: uri, json: true }).then(res => {
+                const data = res;
+                const now = new Date().getTime();
+
+                data.expires_in = now + (data.expires_in - 20) * 1000;;
+                resolve(data);
+            });
         });
     }
 

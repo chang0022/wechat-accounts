@@ -21,26 +21,9 @@ app.use(views(__dirname + '/views', {
     }
 }));
 
-// app.use(async (ctx, next) => {
-//     if (ctx.url.indexOf('/movie') > -1) {
-//         const wechatApi = new Wechat(config.wechat);
-//         const data = await wechatApi.fetchAccessToken();
-//         const access_token = data.access_token;
+router.use('/', api.routes());
 
-//         const tickeData = await wechatApi.fetchTicket(access_token);
-//         const ticket = tickeData.ticket;
-//         const url = ctx.href;
-
-//         const param = sign(ticket, url);
-//         ctx.body = ejs.render(tpl, param);
-//         return next;
-//     }
-//     await next();
-// })
-// 
-// router.use('/', api.routes());
-
-// app.use(router.routes());
+app.use(router.routes());
 
 app.use(wechat(config.wechat, reply));
 

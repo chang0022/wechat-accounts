@@ -38,7 +38,8 @@ const api = {
     semantic: 'https://api.weixin.qq.com/semantic/semproxy/search?',
     ticket: {
         get: prefix + 'ticket/getticket?'
-    }
+    },
+    turing: 'http://www.tuling123.com/openapi/api'
 };
 
 module.exports = api;
