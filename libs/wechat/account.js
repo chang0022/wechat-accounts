@@ -5,6 +5,7 @@
 const request = require('request');
 const rp = require('request-promise-native');
 const Wechat = require('./index');
+const config = require('../../config/wx.config');
 const api = require('../../config/wx.api');
 
 class Account extends Wechat {
@@ -66,4 +67,6 @@ class Account extends Wechat {
     }
 }
 
-module.exports = Account;
+module.exports = () => {
+    return new Account(config.wechat);
+};

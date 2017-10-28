@@ -7,10 +7,6 @@ const logger = require('koa-logger');
 
 const api = require('./routers/api');
 
-const wechat = require('./middleware/wechat');
-const config = require('./config/wx.config');
-const reply = require('./libs/wechat/reply');
-
 const app = new Koa();
 const router = new Router();
 
@@ -25,7 +21,6 @@ router.use('/', api.routes());
 
 app.use(router.routes());
 
-app.use(wechat(config.wechat, reply));
 
 app.on('error', (err, ctx) => {
     logger('server error', err, ctx);

@@ -2,25 +2,13 @@
 
 const path = require('path');
 const config = require('../../config/wx.config');
-const Material = require('./material');
-const User = require('./user');
-const Menu = require('./menu');
-const materialApi = new Material(config.wechat);
-const userApi = new User(config.wechat);
-const menuApi = new Menu(config.wechat);
-const menuConf = require('./menuConf');
+const materialApi = require('./material')();
+const userApi = require('./user')();
 const robot = require('./robot');
-
 
 module.exports = async (ctx, next) => {
     const message = ctx.wxMsg;
-    menuApi.deleteMenu()
-        .then(() => {
-            return menuApi.createMenu(menuConf);
-        })
-        .then(msg => {
-            console.log(msg)
-        });
+
     if (message.MsgType === 'event') {
         if (message.Event === 'subscribe') {
             if (message.EventKey) {
@@ -95,6 +83,7 @@ module.exports = async (ctx, next) => {
                 break;
             case '图片':
                 data = await materialApi.uploadMaterial('image', path.join(__dirname, '../../static/image/avatar.jpg'));
+                console.log(data)
                 reply = {
                     type: 'image',
                     mediaId: data.media_id

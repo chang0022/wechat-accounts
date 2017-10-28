@@ -25,10 +25,12 @@
         <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
     </div>
     <button class="weui-btn weui-btn_primary" id="J_recordBtn">点击，开始录音翻译</button>
-    {{!-- <p id="title"></p>
-    <div id="directors"></div>
-    <div id="year"></div>
-    <div id="poster"></div> --}}
+    <div class="weui-panel weui-panel_access">
+        <div class="weui-panel__hd">电影列表</div>
+        <div class="weui-panel__bd" id="J_resultList">
+
+        </div>
+    </div>
 </body>
 <script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
@@ -52,6 +54,7 @@
     });
     wx.ready(function () {
         var isRecording = false;
+        var $resultList = $('#J_resultList');
         $('#J_recordBtn').click(function () {
             if (!isRecording) {
                 $(this).addClass('weui-btn_loading').html('<i class="weui-loading"></i> 录音中，点击停止')
@@ -72,9 +75,40 @@
                     wx.translateVoice({
                         localId: localId,
                         isShowProgressTips: 1,
-                        success: function (res) {
-                            console.log(res.translateResult);
-                            alert(res.translateResult);
+                        success: function (data) {
+                            var msg = data.translateResult;
+                            var resHtml = '';
+                            var loading = weui.loading('搜索中');
+                            $.ajax({
+                                type: 'GET',
+                                url: 'https://api.douban.com/v2/movie/search?q=' + msg,
+                                dataType: 'jsonp',
+                                jsonp: 'callback',
+                                success: function (response) {
+                                    loading.hide();
+                                    if (response.total > 0) {
+                                        var resArr = response.subjects;
+                                        $.each(resArr, function (i, v) {
+                                            resHtml += '<a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">' +
+                                                '    <div class="weui-media-box__hd">' +
+                                                '        <img class="weui-media-box__thumb" src="' + v.images['small'] + '" alt="' + v.title + '">' +
+                                                '    </div>' +
+                                                '    <div class="weui-media-box__bd">' +
+                                                '        <h4 class="weui-media-box__title">' + v.title + '</h4>' +
+                                                '        <p class="weui-media-box__desc">年份：' + v.year + '</p>' +
+                                                '    </div>' +
+                                                '</a>';
+                                        });
+                                        $resultList.html(resHtml);
+                                    } else {
+                                        $resultList.html('<div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div>');
+                                    }
+                                },
+                                error: function(xhr, errorType, error) {
+                                    loading.hide();
+                                    weui.topTips(error);
+                                }
+                            });
                         }
                     });
                 }

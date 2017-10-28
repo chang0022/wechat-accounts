@@ -120,7 +120,7 @@ class Wechat {
         });
     }
 
-    reply(ctx) {
+    static reply(ctx) {
         const content = ctx.body;
         const message = ctx.wxMsg;
 

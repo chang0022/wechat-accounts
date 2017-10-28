@@ -5,6 +5,7 @@
 const request = require('request');
 const rp = require('request-promise-native');
 const Wechat = require('./index');
+const config = require('../../config/wx.config');
 const api = require('../../config/wx.api');
 
 class Semantic extends Wechat {
@@ -32,4 +33,6 @@ class Semantic extends Wechat {
     }
 }
 
-module.exports = Semantic;
+module.exports = () => {
+    return new Semantic(config.wechat);
+};

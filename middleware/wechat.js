@@ -4,12 +4,20 @@ const sha1 = require('sha1');
 const getRawBody = require('raw-body');
 const Wechat = require('../libs/wechat/index');
 const util = require('../libs/wechat/util');
+const config = require('../config/wx.config');
+const menuApi = require('../libs/wechat/menu')();
+const menuConf = require('../libs/wechat/menuConf');
 
-module.exports = (opts, handler) => {
-    const wechat = new Wechat(opts);
-
+module.exports = (handler) => {
+    menuApi.deleteMenu()
+        .then(() => {
+            return menuApi.createMenu(menuConf);
+        })
+        .then(msg => {
+            console.log(msg)
+        });
     return async (ctx, next) => {
-        const token = opts.token;
+        const token = config.wechat.token;
         const signature = ctx.query.signature;
         const nonce = ctx.query.nonce;
         const timestamp = ctx.query.timestamp;
@@ -41,7 +49,7 @@ module.exports = (opts, handler) => {
 
             await handler(ctx, next);
 
-            wechat.reply(ctx);
+            Wechat.reply(ctx);
         }
     }
 };

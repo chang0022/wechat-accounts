@@ -3,7 +3,7 @@
 module.exports = {
     'button': [
         {
-            'name': '谢谢关注',
+            'name': '测试',
             'type': 'click',
             'key': 'menu_click'
         },
@@ -13,7 +13,7 @@ module.exports = {
                 {
                     "type": "view",
                     "name": "搜索电影",
-                    "url": "http://aersnr.natappfree.cc/movie"
+                    "url": "http://f6khf9.natappfree.cc/movie"
                 }
             ]
         }

@@ -6,6 +6,7 @@ const fs = require('fs');
 const request = require('request');
 const rp = require('request-promise-native');
 const Wechat = require('./index');
+const config = require('../../config/wx.config');
 const api = require('../../config/wx.api');
 
 class Material extends Wechat {
@@ -229,4 +230,6 @@ class Material extends Wechat {
     }
 }
 
-module.exports = Material;
+module.exports = () => {
+    return new Material(config.wechat);
+};
