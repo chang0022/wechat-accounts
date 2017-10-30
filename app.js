@@ -4,8 +4,10 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const views = require('koa-views');
 const logger = require('koa-logger');
+const serve = require('koa-static');
 
-const api = require('./routers/api');
+const admin = require('./routers/admin');
+const wechat = require('./routers/wechat');
 
 const app = new Koa();
 const router = new Router();
@@ -16,8 +18,11 @@ app.use(views(__dirname + '/views', {
         hbs: 'handlebars'
     }
 }));
+app.use(serve('./static'));
 
-router.use('/', api.routes());
+router.use('/admin', admin.routes());
+router.use('/wechat', wechat.routes());
+
 
 app.use(router.routes());
 

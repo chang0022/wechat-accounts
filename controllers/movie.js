@@ -16,9 +16,9 @@ const getMovie = async (ctx, next) => {
 
     const param = sign(ticket, url);
 
-    await ctx.render('./index.hbs', param);
+    await ctx.render('./wechat/index.hbs', param);
 };
 
 module.exports = router => {
-    router.get('movie', getMovie);
+    router.get('/movie', getMovie);
 };

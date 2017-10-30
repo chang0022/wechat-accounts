@@ -9,5 +9,5 @@ const getWechat = async (ctx, next) => {
 };
 
 module.exports = router => {
-    router.all('wx', getWechat);
+    router.all('/', getWechat);
 };
