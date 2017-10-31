@@ -62,13 +62,13 @@
                     <li class="layui-nav-item layui-nav-itemed">
                         <a href="javascript:;">电影管理</a>
                         <dl class="layui-nav-child">
-                            <dd class="layui-this">
+                            <dd>
                                 <a href="/admin">电影展示</a>
                             </dd>
                             <dd>
                                 <a href="/admin/list">电影列表</a>
                             </dd>
-                            <dd>
+                            <dd class="layui-this">
                                 <a href="javascript:;">电影录入</a>
                             </dd>
                         </dl>
@@ -82,7 +82,7 @@
 
         <div class="layui-body">
             <div class="layui-content">
-                <form class="layui-form" action="/admin/moive/new" method="POST">
+                <form class="layui-form" action="./add/movie" method="POST">
                     <div class="layui-form-item">
                         <label class="layui-form-label">电影名字</label>
                         <div class="layui-input-block">
@@ -111,12 +111,6 @@
                         <label class="layui-form-label">海报地址</label>
                         <div class="layui-input-block">
                             <input type="text" name="poster" required lay-verify="required" placeholder="请输入海报地址" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">片源地址</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="source" required lay-verify="required" placeholder="请输入片源地址" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -159,10 +153,10 @@
                 type: 'year'
             });
 
-            form.on('submit(form)', function (data) {
+            {{!-- form.on('submit(form)', function (data) {
                 layer.msg(JSON.stringify(data.field));
                 return false;
-            });
+            }); --}}
         });
     </script>
 </body>
