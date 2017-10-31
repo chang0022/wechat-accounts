@@ -62,14 +62,14 @@
                     <li class="layui-nav-item layui-nav-itemed">
                         <a href="javascript:;">电影管理</a>
                         <dl class="layui-nav-child">
+                            <dd>
+                                <a href="/admin">电影展示</a>
+                            </dd>
                             <dd class="layui-this">
-                                <a href="javascript:;">电影展示</a>
+                                <a href="javascript:;">电影列表</a>
                             </dd>
                             <dd>
-                                <a href="/admin/list">电影列表</a>
-                            </dd>
-                            <dd>
-                                <a href="/admin/edit">电影录入</a>
+                               <a href="/admin/edit">电影录入</a>
                             </dd>
                         </dl>
                     </li>
@@ -82,34 +82,52 @@
 
         <div class="layui-body">
             <div class="layui-content">
-                <div class="layui-row">
-                    {{#each movies}}
-                    <div class="layui-col-sm6 layui-col-md4 layui-col-lg3">
-                        <div class="thumbnail">
-                            <img src="{{poster}}" alt="{{title}}">
-                            <div class="caption">
-                                <h3>
-                                    <a href="http://codeguide.bootcss.com" title="{{title}}" target="_blank">{{title}}</a>
-                                </h3>
-                                <p>Bootstrap 编码规范：编写灵活、稳定、高质量的 HTML 和 CSS 代码的规范。</p>
-                            </div>
-                        </div>
-                    </div>
-                    {{/each}}
-                </div>
+                <table class="layui-table" lay-data="{height:'full-300', url:'../mock/movie.json', page:true, id:'J_movieList'}" lay-filter="movie">
+                    <thead>
+                        <tr>
+                            <th lay-data="{field:'id', width:80}">编号</th>
+                            <th lay-data="{field:'name',width:180}">电影名</th>
+                            <th lay-data="{field:'doctor', width:80}">导演</th>
+                            <th lay-data="{field:'country', width:80}">国家</th>
+                            <th lay-data="{field:'language', width:80}">语种</th>
+                            <th lay-data="{field:'year',width:180}">上映年份</th>
+                            <th lay-data="{field:'entryTime',width:180}">录入时间</th>
+                            <th lay-data="{fixed: 'right', width:160, align:'center', toolbar: '#barDemo'}"></th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
-
         <div class="layui-footer">
             <!-- 底部固定区域 -->
             © neochang.xzy - Power By Koa
         </div>
     </div>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+    </script>
     <script src="../layui/layui.js"></script>
     <script>
         //JavaScript代码区域
-        layui.use('element', function () {
+        layui.use(['element', 'table'], function () {
             var element = layui.element;
+            var table = layui.table;
+
+            table.on('tool(movie)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'detail') {
+                    layer.msg('ID：' + data.id + ' 的查看操作');
+                } else if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del();
+                        layer.close(index);
+                    });
+                } else if (obj.event === 'edit') {
+                    layer.alert('编辑行：<br>' + JSON.stringify(data))
+                }
+            });
         });
     </script>
 </body>
