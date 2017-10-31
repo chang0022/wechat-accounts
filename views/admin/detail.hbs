@@ -63,13 +63,13 @@
                         <a href="javascript:;">电影管理</a>
                         <dl class="layui-nav-child">
                             <dd class="layui-this">
-                                <a href="javascript:;">电影展示</a>
+                                <a href="/admin">电影展示</a>
                             </dd>
                             <dd>
                                 <a href="/admin/list">电影列表</a>
                             </dd>
                             <dd>
-                                <a href="/admin/edit">电影录入</a>
+                                <a href="javascript:;">电影录入</a>
                             </dd>
                         </dl>
                     </li>
@@ -82,21 +82,34 @@
 
         <div class="layui-body">
             <div class="layui-content">
-                <div class="layui-row">
-                    {{#each movies}}
-                    <div class="layui-col-sm6 layui-col-md4 layui-col-lg3">
-                        <div class="thumbnail">
-                            <img src="{{poster}}" alt="{{title}}">
-                            <div class="caption">
-                                <h3>
-                                    <a href="http://codeguide.bootcss.com" title="{{title}}" target="_blank">{{title}}</a>
-                                </h3>
-                                <p>Bootstrap 编码规范：编写灵活、稳定、高质量的 HTML 和 CSS 代码的规范。</p>
-                            </div>
-                        </div>
-                    </div>
-                    {{/each}}
-                </div>
+                <table class="layui-table">
+                    <tbody>
+                        <tr>
+                            <td>电影名称</td>
+                            <td>人生就像是一场修行</td>
+                        </tr>
+                        <tr>
+                            <td>导演</td>
+                            <td>于千</td>
+                        </tr>
+                        <tr>
+                            <td>国家</td>
+                            <td>于千</td>
+                        </tr>
+                        <tr>
+                            <td>语言</td>
+                            <td>于千</td>
+                        </tr>
+                        <tr>
+                            <td>上映年份</td>
+                            <td>于千</td>
+                        </tr>
+                        <tr>
+                            <td>简介</td>
+                            <td>于千</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 

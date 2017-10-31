@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>公众号后台管理</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">公众号后台管理</div>
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">控制台</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">商品管理</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">其它系统</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="javascript:;">邮件管理</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;">消息管理</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;">授权管理</a>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img src="http://t.cn/RCzsdCq" class="layui-nav-img"> Admin
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="javascript:;">基本资料</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;">安全设置</a>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">退出</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;">电影管理</a>
+                        <dl class="layui-nav-child">
+                            <dd class="layui-this">
+                                <a href="/admin">电影展示</a>
+                            </dd>
+                            <dd>
+                                <a href="/admin/list">电影列表</a>
+                            </dd>
+                            <dd>
+                                <a href="javascript:;">电影录入</a>
+                            </dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">用户管理</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body">
+            <div class="layui-content">
+                <form class="layui-form" action="/admin/moive/new" method="POST">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">电影名字</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" required lay-verify="required" placeholder="请输入电影名字" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">导演</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="doctor" required lay-verify="required" placeholder="请输入导演" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">国家</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="country" required lay-verify="required" placeholder="请输入国家" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">语种</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="language" required lay-verify="required" placeholder="请输入语种" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">海报地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="poster" required lay-verify="required" placeholder="请输入海报地址" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">片源地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="source" required lay-verify="required" placeholder="请输入片源地址" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">上映年份</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="year" required lay-verify="required" placeholder="请输入上映年份" autocomplete="off" class="layui-input"
+                                id="J_year">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">电影简介</label>
+                        <div class="layui-input-block">
+                            <textarea name="summary" placeholder="请输入电影简介" class="layui-textarea" required lay-verify="required"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="form">录入</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            © neochang.xzy - Power By Koa
+        </div>
+    </div>
+    <script src="../layui/layui.js"></script>
+    <script>
+        //JavaScript代码区域
+        layui.use(['element', 'laydate', 'form'], function () {
+            var element = layui.element;
+            var laydate = layui.laydate;
+            var form = layui.form;
+
+            laydate.render({
+                elem: '#J_year',
+                type: 'year'
+            });
+
+            form.on('submit(form)', function (data) {
+                layer.msg(JSON.stringify(data.field));
+                return false;
+            });
+        });
+    </script>
+</body>
+
+</html>
