@@ -31,14 +31,14 @@ MovieSchema.pre('save', function (next) {
 });
 
 MovieSchema.statics = {
-    fetch: async function () {
-        return await this
+    fetch() {
+        return this
             .find({})
             .sort('meta.updateAt')
             .exec();
     },
-    findById: async function (id) {
-        return await this
+    findById(id) {
+        return this
             .findOne({ _id: id })
             .exec();
     }
