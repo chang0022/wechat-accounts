@@ -7,7 +7,6 @@ const MovieSchema = new Schema({
     country: String,
     language: String,
     poster: String,
-    source: String,
     year: Number,
     summary: String,
     meta: {
@@ -28,6 +27,7 @@ MovieSchema.pre('save', function (next) {
     } else {
         this.meta.updateAt = Date.now();
     }
+    next();
 });
 
 MovieSchema.statics = {
@@ -39,7 +39,7 @@ MovieSchema.statics = {
     },
     findById(id) {
         return this
-            .findOne({ _id: id })
+            .find(id)
             .exec();
     }
 };
