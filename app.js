@@ -30,7 +30,7 @@ app.use(views(__dirname + '/views', {
         hbs: 'handlebars'
     }
 }));
-app.use(serve('./static'));
+app.use(serve(__dirname + '/static/'));
 
 router.use('/admin', admin.routes());
 router.use('/wechat', wechat.routes());

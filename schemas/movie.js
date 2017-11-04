@@ -37,9 +37,9 @@ MovieSchema.statics = {
             .sort('meta.updateAt')
             .exec();
     },
-    findById(id) {
+    fetchById(id) {
         return this
-            .find(id)
+            .findById(id)
             .exec();
     }
 };

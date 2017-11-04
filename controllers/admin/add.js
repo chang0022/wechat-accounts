@@ -7,10 +7,17 @@ const addMovie = async (ctx, next) => {
     let _movie = null;
 
     if (!!id) {
-        _movie = await Movie.findById(id);
+        _movie = await Movie.fetchById(id);
+        console.log(_movie)
         Object.assign(_movie, movie);
-        _movie.save();
-        await ctx.redirect('/detail/' + _movie.id)
+        await _movie.save()
+            .then(movie => {
+                ctx.redirect('/admin/detail/' + movie.id)
+            })
+            .catch(err => {
+                console.log(err);
+                ctx.redirect('back');
+            });
     } else {
         _movie = new Movie({
             name: movie.name,
@@ -18,12 +25,18 @@ const addMovie = async (ctx, next) => {
             country: movie.country,
             language: movie.language,
             poster: movie.poster,
-            source: movie.source,
             year: movie.year,
             summary: movie.summary
         })
-        _movie.save()
-        await ctx.redirect('/detail/' + _movie.id)
+        await _movie.save()
+            .then(movie => {
+                console.log(movie)
+                ctx.redirect('/admin/detail/' + movie.id)
+            })
+            .catch(err => {
+                console.log(err);
+                ctx.redirect('back');
+            });
     }
 };
 

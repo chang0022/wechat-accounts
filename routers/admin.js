@@ -6,6 +6,8 @@ const edit = require('../controllers/admin/edit');
 const add = require('../controllers/admin/add');
 const detail = require('../controllers/admin/detail');
 const api = require('../controllers/admin/api');
+const update = require('../controllers/admin/update');
+
 const Router = require('koa-router');
 const router = new Router();
 
@@ -15,5 +17,6 @@ edit(router);
 add(router);
 detail(router);
 api(router);
+update(router);
 
 module.exports = router;
