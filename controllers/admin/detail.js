@@ -4,7 +4,6 @@ const Movie = require('../../models/movie');
 const getDetail = async (ctx, next) => {
     let id = ctx.params.id;
     let movie = await Movie.fetchById(id);
-    console.log(movie)
     await ctx.render('./admin/detail.hbs', movie);
 };
 

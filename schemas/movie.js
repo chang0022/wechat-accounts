@@ -41,6 +41,11 @@ MovieSchema.statics = {
         return this
             .findById(id)
             .exec();
+    },
+    deleteById(id) {
+        return this.
+            remove({_id: id})
+            .exec()
     }
 };
 

@@ -69,7 +69,7 @@
                                 <a href="javascript:;">电影列表</a>
                             </dd>
                             <dd>
-                               <a href="/admin/edit">电影录入</a>
+                                <a href="/admin/edit">电影录入</a>
                             </dd>
                         </dl>
                     </li>
@@ -82,7 +82,7 @@
 
         <div class="layui-body">
             <div class="layui-content">
-                <table class="layui-table" lay-data="{height:'full-300', url:'./api/movie/list', page:true, id:'J_movieList'}" lay-filter="movie">
+                <table class="layui-table" lay-data="{height:'full-300', url:'/admin/api/movie/list', page:true, id:'J_movieList'}" lay-filter="movie">
                     <thead>
                         <tr>
                             <th lay-data="{field:'name',width:180}">电影名</th>
@@ -107,6 +107,7 @@
         <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
     </script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="/layui/layui.js"></script>
     <script>
         //JavaScript代码区域
@@ -120,8 +121,17 @@
                     window.location = '/admin/detail/' + data._id;
                 } else if (obj.event === 'del') {
                     layer.confirm('真的删除行么', function (index) {
-                        obj.del();
-                        layer.close(index);
+                        $.ajax('/admin/api/movie/' + data._id, {
+                            method: 'DELETE',
+                            dataType: 'json',
+                            success: function (res) {
+                                if (res.code !== 200) {
+                                    return false;
+                                }
+                                obj.del();
+                                layer.close(index);
+                            }
+                        })
                     });
                 } else if (obj.event === 'edit') {
                     window.location = '/admin/update/' + data._id;

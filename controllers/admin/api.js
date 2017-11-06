@@ -11,6 +11,16 @@ const getMovieList = async (ctx, next) => {
     }
 };
 
+const deleteMovie = async (ctx, next) => {
+    let id = ctx.params.id;
+    await Movie.deleteById(id);
+    ctx.body = {
+        "code": 200,
+        "msg": "OK"
+    }
+};
+
 module.exports = router => {
     router.get('/api/movie/list', getMovieList);
+    router.delete('/api/movie/:id', deleteMovie);
 };
